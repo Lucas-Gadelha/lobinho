@@ -49,7 +49,9 @@ let poro: entity;
 let tresh: entity;
 let Board: board;
 let POWUP: boolean = false;
-let power_time: number = frameCount;
+let power_time: number;
+let death: number = 0;
+let point: number = 0;
 
 function loadImg(path: string): p5.Image {
   return loadImage(path,
@@ -120,13 +122,19 @@ function keyPressed() {
   } 
 }  
 
-function death(){
+function collision(){
   if(tresh.x == poro.x && tresh.y == poro.y){
-    poro.image = poro_right;
+    if(POWUP == true){
+      point += 1;
+      return point;
+    }else{
+      death += 1;
+      return death;
+    }
   }
 }
-function powerup(){
 
+function powerup(){
   if(poro.x == braum.x && poro.y == braum.y){
     power_time = frameCount;
     poro.image = poro_bigode_right;
@@ -134,17 +142,18 @@ function powerup(){
     
   }if(frameCount - power_time > 120){
     POWUP = false;
-
   }
 }
 
 function draw() {
   background(255);
-  text("tempo: " + frameCount/30,820,100);
+  text("tempo: " + frameCount/30, 820, 100);
+  
   Board.draw();
   tresh.draw();
   braum.draw();
   poro.draw();
   powerup();
-  
+  collision();
+  text("mortes: " + death + "\n pontos: " + point, 800, 150);
 }
